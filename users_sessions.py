@@ -41,13 +41,20 @@ def main():
         user_sessions = {"user_sessions": build_user_sessions(activities_response.json())}
     else:
         #Fail
-        return -1
+        return False
     
     print(json.dumps(user_sessions, indent=3))
 
-    requests.post("https://api.slangapp.com/challenges/v1/activities/sessions",
+    send = requests.post("https://api.slangapp.com/challenges/v1/activities/sessions",
     headers={"Authorization": "Basic MTQ0Om5aRUlBYkgvaFFFR2RNRnVDYnpOZlU2cmt2eUEyclVWWmpNeTZaRVFMQTQ9"}, 
     json=user_sessions) # Keep in mind this should be a dictionary {“user_sessions”: {...}}
+
+    if send.status_code == 204:
+        # Succes (Code 204)
+        return True
+    else:
+        #Fail
+        return False
 
 if __name__ == "__main__":
     main()
