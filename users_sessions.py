@@ -3,13 +3,15 @@ from datetime import datetime
 import json 
 
 def get_seconds(string_date_finish, string_date_start):
+    # Format the dates
     date_format1 = string_date_finish[:10] + ' ' + string_date_finish[12:19]
     date_format2 = string_date_start[:10] + ' ' + string_date_start[12:19]
+    # Convert String to data Time
     date1 = datetime.strptime(date_format1, '%Y-%m-%d %H:%M:%S')
     date2 = datetime.strptime(date_format2, '%Y-%m-%d %H:%M:%S')
     diff = (date1-date2)
-    # print( diff.seconds )
-    return diff.seconds
+    #Return the seconds
+    return diff.total_seconds()
 
 
 def build_user_sessions(activities_json):
