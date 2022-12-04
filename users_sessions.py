@@ -15,20 +15,28 @@ def get_seconds(string_date_finish, string_date_start):
 
 
 def build_user_sessions(activities_json):
-    # Dictionary
+    # I get the array from the dictionary
     activities_array = activities_json['activities']
     users_sessions = {}
+    # First and only loop in the function. The complexity is O(n).
     for activities in activities_array:
+        #If the key exists in the dictionary I compare to the last activity submitted
         if (activities["user_id"] in users_sessions):
+            # I get the array associated to the key so I can use it
             aux = users_sessions[activities['user_id']]
+            # I use my function get_seconds to check if the time between both activities is greater than five minutes
             if ( get_seconds(activities["answered_at"] , aux[-1]["ended_at"]) < 300 ) :
                 aux[-1]["ended_at"] = activities['answered_at']
                 aux[-1]["activity_ids"].append(activities["id"])
+                # I compute the durations in seconds
                 aux[-1]["duration_seconds"] = get_seconds(activities["answered_at"], aux[-1]["started_at"])
             else:
+                # more than 5 minutes have elapsed between the two dates, we add it as a new session
                 aux.append({ "ended_at" : activities["answered_at"], "started_at" : activities["first_seen_at"], "activity_ids" : [activities["id"]], "duration_seconds": get_seconds(activities["answered_at"] , activities["first_seen_at"]) })
+            # I assign the array again to its key in the dictionary
             users_sessions[activities['user_id']] = aux
         else:
+            #It´s a new session from a new user
             users_sessions[activities['user_id']] = [ {"ended_at" : activities["answered_at"], "started_at" : activities["first_seen_at"], "activity_ids" : [activities["id"]], "duration_seconds": get_seconds(activities["answered_at"] , activities["first_seen_at"])  } ]
       
     return users_sessions
